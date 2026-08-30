@@ -25,24 +25,33 @@ android {
 
   signingConfigs {
     create("release") {
-      val customKeystore = System.getenv("KEYSTORE_PATH")?.let { file(it) }
-      val defaultUploadKeystore = file("${rootDir}/my-upload-key.jks")
-      val debugKeystore = file("${rootDir}/debug.keystore")
-      if (customKeystore != null && customKeystore.exists()) {
-        storeFile = customKeystore
-        storePassword = System.getenv("STORE_PASSWORD")
-        keyAlias = "upload"
-        keyPassword = System.getenv("KEY_PASSWORD")
-      } else if (defaultUploadKeystore.exists()) {
-        storeFile = defaultUploadKeystore
-        storePassword = System.getenv("STORE_PASSWORD")
-        keyAlias = "upload"
-        keyPassword = System.getenv("KEY_PASSWORD")
-      } else {
-        storeFile = debugKeystore
-        storePassword = "android"
-        keyAlias = "androiddebugkey"
-        keyPassword = "android"
+      val keystorePath = project.findProperty("RELEASE_STORE_FILE") as? String
+        ?: System.getenv("KEYSTORE_PATH")
+        ?: project.findProperty("KEYSTORE_PATH") as? String
+
+      val candidateFiles = listOfNotNull(
+        keystorePath?.let { file(it) },
+        file("${rootDir}/release.keystore"),
+        file("${rootDir}/upload-keystore.jks"),
+        file("${rootDir}/my-upload-key.jks")
+      )
+
+      val releaseStore = candidateFiles.firstOrNull { it.exists() }
+
+      if (releaseStore != null) {
+        storeFile = releaseStore
+        storePassword = (project.findProperty("RELEASE_STORE_PASSWORD") as? String)
+          ?: System.getenv("STORE_PASSWORD")
+          ?: (project.findProperty("STORE_PASSWORD") as? String)
+          ?: ""
+        keyAlias = (project.findProperty("RELEASE_KEY_ALIAS") as? String)
+          ?: System.getenv("KEY_ALIAS")
+          ?: (project.findProperty("KEY_ALIAS") as? String)
+          ?: "upload"
+        keyPassword = (project.findProperty("RELEASE_KEY_PASSWORD") as? String)
+          ?: System.getenv("KEY_PASSWORD")
+          ?: (project.findProperty("KEY_PASSWORD") as? String)
+          ?: ""
       }
     }
     create("debugConfig") {
