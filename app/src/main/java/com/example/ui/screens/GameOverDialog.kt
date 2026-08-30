@@ -27,6 +27,7 @@ import com.example.ui.theme.*
 fun GameOverDialog(
     score: Int,
     onRetry: () -> Unit,
+    onWatchAdForContinue: (() -> Unit)? = null,
     onBackToMap: () -> Unit
 ) {
     Dialog(
@@ -83,6 +84,20 @@ fun GameOverDialog(
                 }
 
                 Spacer(modifier = Modifier.height(2.dp))
+
+                // Watch Ad for Continue Button
+                if (onWatchAdForContinue != null) {
+                    GamingButton(
+                        text = "WATCH AD (SHUFFLE PIECES)",
+                        icon = Icons.Rounded.PlayCircle,
+                        onClick = onWatchAdForContinue,
+                        gradientColors = listOf(Color(0xFFFFB300), Color(0xFFFF8F00)),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
+                        testTag = "gameover_rewarded_btn"
+                    )
+                }
 
                 // Retry Button
                 GamingButton(

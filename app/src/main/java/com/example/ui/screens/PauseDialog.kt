@@ -4,6 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ExitToApp
+import androidx.compose.material.icons.automirrored.rounded.VolumeOff
+import androidx.compose.material.icons.automirrored.rounded.VolumeUp
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -74,7 +77,7 @@ fun PauseDialog(
                     )
 
                     GamingIconButton(
-                        icon = if (prefs.isSfxEnabled) Icons.Rounded.VolumeUp else Icons.Rounded.VolumeOff,
+                        icon = if (prefs.isSfxEnabled) Icons.AutoMirrored.Rounded.VolumeUp else Icons.AutoMirrored.Rounded.VolumeOff,
                         onClick = { viewModel.toggleSfx() },
                         backgroundColor = if (prefs.isSfxEnabled) GoldenSun else Color(0xFFECEFF1),
                         iconTint = if (prefs.isSfxEnabled) Color.White else TextMuted,
@@ -118,7 +121,7 @@ fun PauseDialog(
 
                 GamingButton(
                     text = "QUIT TO MAP",
-                    icon = Icons.Rounded.ExitToApp,
+                    icon = Icons.AutoMirrored.Rounded.ExitToApp,
                     onClick = onQuit,
                     gradientColors = listOf(Color(0xFF78909C), Color(0xFF607D8B)),
                     modifier = Modifier

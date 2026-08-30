@@ -5,7 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowForward
+import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarOutline
@@ -134,7 +134,7 @@ fun LevelCompleteDialog(
                 // Action Buttons
                 GamingButton(
                     text = "NEXT LEVEL",
-                    icon = Icons.Rounded.ArrowForward,
+                    icon = Icons.AutoMirrored.Rounded.ArrowForward,
                     onClick = onNextLevel,
                     gradientColors = listOf(Color(0xFF00C853), Color(0xFF00E676)),
                     modifier = Modifier

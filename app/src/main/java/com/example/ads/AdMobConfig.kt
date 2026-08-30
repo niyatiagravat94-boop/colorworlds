@@ -20,6 +20,9 @@ object AdMobConfig {
     // AD UNIT 3: Native Advanced Ad Unit ID
     const val NATIVE_ADVANCED_AD_UNIT_ID = "ca-app-pub-5873612031869970/2199782726"
 
+    // AD UNIT 4: Rewarded Ad Unit ID (Test / Fallback unit for rewarded rewards)
+    const val REWARDED_AD_UNIT_ID = "ca-app-pub-3940256099942544/5224354917"
+
     // Frequency Caps & Safety Controls
     const val MIN_SECONDS_BETWEEN_INTERSTITIALS = 90L // Minimum cooldown between full-screen ads
     const val MIN_LEVELS_BETWEEN_INTERSTITIALS = 2    // Show interstitial at most every 2 completed levels

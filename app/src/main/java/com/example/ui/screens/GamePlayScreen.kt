@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.Undo
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -314,7 +315,7 @@ fun GamePlayScreen(
                 ) {
                     // Undo Button with Clean Badge
                     GamingIconButton(
-                        icon = Icons.Rounded.Undo,
+                        icon = Icons.AutoMirrored.Rounded.Undo,
                         onClick = { viewModel.requestUndo() },
                         badgeText = "${viewModel.preferences.undosCount}",
                         backgroundColor = if (uiState.canUndo) Color.White else Color(0xFFF1F5F9),
@@ -487,6 +488,16 @@ fun GamePlayScreen(
             GameOverDialog(
                 score = uiState.score,
                 onRetry = { viewModel.restartCurrentLevel() },
+                onWatchAdForContinue = if (activity != null) {
+                    {
+                        viewModel.adsManager.showRewardedAd(
+                            activity = activity,
+                            onRewardEarned = {
+                                viewModel.continueWithReward()
+                            }
+                        )
+                    }
+                } else null,
                 onBackToMap = onBackToLevelSelect
             )
         }
