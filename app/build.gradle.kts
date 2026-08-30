@@ -43,15 +43,15 @@ android {
         storePassword = (project.findProperty("RELEASE_STORE_PASSWORD") as? String)
           ?: System.getenv("STORE_PASSWORD")
           ?: (project.findProperty("STORE_PASSWORD") as? String)
-          ?: ""
+          ?: "colorworlds2026"
         keyAlias = (project.findProperty("RELEASE_KEY_ALIAS") as? String)
           ?: System.getenv("KEY_ALIAS")
           ?: (project.findProperty("KEY_ALIAS") as? String)
-          ?: "upload"
+          ?: "colorworlds_release"
         keyPassword = (project.findProperty("RELEASE_KEY_PASSWORD") as? String)
           ?: System.getenv("KEY_PASSWORD")
           ?: (project.findProperty("KEY_PASSWORD") as? String)
-          ?: ""
+          ?: "colorworlds2026"
       }
     }
     create("debugConfig") {
@@ -65,7 +65,7 @@ android {
   buildTypes {
     release {
       isCrunchPngs = false
-      isMinifyEnabled = false
+      isMinifyEnabled = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
       signingConfig = signingConfigs.getByName("release")
     }
