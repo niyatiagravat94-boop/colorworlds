@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Soft drop shadow underneath blocks -->
+    <path
+        android:fillColor="#3D000000"
+        android:pathData="M32,74 L54,84 L76,74 L54,64 Z" />
+    <path
+        android:fillColor="#30000000"
+        android:pathData="M24,68 L54,82 L84,68 L54,54 Z" />
+
+    <!-- Isometric 3D Cyan Block (Left) -->
+    <!-- Top Face -->
+    <path
+        android:fillColor="#00E5FF"
+        android:pathData="M38,44 L52,37 L52,47 L38,54 Z" />
+    <!-- Left Face (Shadowed) -->
+    <path
+        android:fillColor="#0091EA"
+        android:pathData="M38,54 L52,47 L52,59 L38,66 Z" />
+    <!-- Right Face (Midtone) -->
+    <path
+        android:fillColor="#00B0FF"
+        android:pathData="M52,47 L66,40 L66,52 L52,59 Z" />
+
+    <!-- Isometric 3D Magenta/Pink Block (Center-Top) -->
+    <!-- Top Face (Highlight) -->
+    <path
+        android:fillColor="#FF4081"
+        android:pathData="M54,26 L68,33 L54,40 L40,33 Z" />
+    <!-- Left Face -->
+    <path
+        android:fillColor="#C2185B"
+        android:pathData="M40,33 L54,40 L54,52 L40,45 Z" />
+    <!-- Right Face -->
+    <path
+        android:fillColor="#E91E63"
+        android:pathData="M54,40 L68,33 L68,45 L54,52 Z" />
+    <!-- Glossy Highlight Streak on Magenta -->
+    <path
+        android:fillColor="#80FFFFFF"
+        android:pathData="M52,28 L62,33 L58,35 L48,30 Z" />
+
+    <!-- Isometric 3D Yellow/Gold Block (Right) -->
+    <!-- Top Face -->
+    <path
+        android:fillColor="#FFEA00"
+        android:pathData="M68,33 L82,40 L68,47 L54,40 Z" />
+    <!-- Left Face -->
+    <path
+        android:fillColor="#FFAB00"
+        android:pathData="M54,40 L68,47 L68,59 L54,52 Z" />
+    <!-- Right Face -->
+    <path
+        android:fillColor="#FFD600"
+        android:pathData="M68,47 L82,40 L82,52 L68,59 Z" />
+
+    <!-- Isometric 3D Lime Green Block (Bottom-Center) -->
+    <!-- Top Face -->
+    <path
+        android:fillColor="#76FF03"
+        android:pathData="M54,52 L68,59 L54,66 L40,59 Z" />
+    <!-- Left Face -->
+    <path
+        android:fillColor="#388E3C"
+        android:pathData="M40,59 L54,66 L54,78 L40,71 Z" />
+    <!-- Right Face -->
+    <path
+        android:fillColor="#64DD17"
+        android:pathData="M54,66 L68,59 L68,71 L54,78 Z" />
+    <!-- Highlight on Green -->
+    <path
+        android:fillColor="#66FFFFFF"
+        android:pathData="M52,54 L62,59 L58,61 L48,56 Z" />
+
+    <!-- Sparkle Stars -->
+    <!-- Sparkle Top-Right -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M78,25 Q82,25 82,21 Q82,25 86,25 Q82,25 82,29 Q82,25 78,25 Z" />
+    <!-- Sparkle Left -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M28,42 Q31,42 31,39 Q31,42 34,42 Q31,42 31,45 Q31,42 28,42 Z" />
+    <!-- Small Sparkle Bottom-Right -->
+    <path
+        android:fillColor="#80D8FF"
+        android:pathData="M74,68 Q76,68 76,66 Q76,68 78,68 Q76,68 76,70 Q76,68 74,68 Z" />
+</vector>

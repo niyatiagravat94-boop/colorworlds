@@ -1,0 +1,6 @@
+{
+  "name": "Color Worlds: 3D Block Puzzle",
+  "description": "A vibrant 3D color block puzzle adventure featuring 5 distinct worlds, 50 engaging levels, satisfying physics, particle VFX, and rich sound design.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
