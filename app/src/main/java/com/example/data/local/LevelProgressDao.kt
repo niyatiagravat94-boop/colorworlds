@@ -11,6 +11,9 @@ interface LevelProgressDao {
     @Query("SELECT * FROM level_progress WHERE levelNumber = :levelNumber LIMIT 1")
     suspend fun getProgressForLevel(levelNumber: Int): LevelProgressEntity?
 
+    @Query("SELECT * FROM level_progress WHERE levelNumber = :levelNumber LIMIT 1")
+    fun observeProgressForLevel(levelNumber: Int): Flow<LevelProgressEntity?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrUpdate(progress: LevelProgressEntity)
 

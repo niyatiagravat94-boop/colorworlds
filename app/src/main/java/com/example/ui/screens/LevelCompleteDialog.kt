@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
+import androidx.compose.material.icons.rounded.EmojiEvents
 import androidx.compose.material.icons.rounded.Replay
 import androidx.compose.material.icons.rounded.Star
 import androidx.compose.material.icons.rounded.StarOutline
@@ -22,7 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.example.data.model.LevelData
 import com.example.data.model.WorldTheme
+import com.example.data.repository.LevelRepository
 import com.example.ui.components.GamingButton
 import com.example.ui.theme.*
 
@@ -33,15 +36,17 @@ fun LevelCompleteDialog(
     score: Int,
     movesUsed: Int,
     worldTheme: WorldTheme,
+    levelData: LevelData? = null,
     onNextLevel: () -> Unit,
     onReplay: () -> Unit
 ) {
+    val level = levelData ?: LevelRepository.getLevel(levelNumber)
     var starCountVisible by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(stars) {
         starCountVisible = 0
         for (i in 1..stars) {
-            kotlinx.coroutines.delay(280)
+            kotlinx.coroutines.delay(260)
             starCountVisible = i
         }
     }
@@ -79,11 +84,11 @@ fun LevelCompleteDialog(
                     letterSpacing = 1.sp
                 )
 
-                // 3 Star Animation Row
+                // 3 Star Animation Row with Thresholds
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(vertical = 6.dp)
+                    modifier = Modifier.padding(vertical = 4.dp)
                 ) {
                     for (i in 1..3) {
                         val isVisible = i <= starCountVisible
@@ -93,14 +98,28 @@ fun LevelCompleteDialog(
                             label = "complete_star_$i"
                         )
 
-                        Icon(
-                            imageVector = if (isVisible) Icons.Rounded.Star else Icons.Rounded.StarOutline,
-                            contentDescription = "Star $i",
-                            tint = if (isVisible) GoldenSun else Color(0xFFCFD8DC),
-                            modifier = Modifier
-                                .size(48.dp)
-                                .scale(scale)
-                        )
+                        val thresholdScore = when (i) {
+                            1 -> level.oneStarScore
+                            2 -> level.twoStarScore
+                            else -> level.threeStarScore
+                        }
+
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(
+                                imageVector = if (isVisible) Icons.Rounded.Star else Icons.Rounded.StarOutline,
+                                contentDescription = "Star $i",
+                                tint = if (isVisible) GoldenSun else Color(0xFFCFD8DC),
+                                modifier = Modifier
+                                    .size(46.dp)
+                                    .scale(scale)
+                            )
+                            Text(
+                                text = "$thresholdScore+",
+                                color = if (isVisible) GoldenSun else TextMuted,
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
                     }
                 }
 
@@ -110,26 +129,37 @@ fun LevelCompleteDialog(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(18.dp))
                         .background(Color(0xFFF8FAFC))
-                        .padding(16.dp),
+                        .padding(14.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("FINAL SCORE", color = TextSecondaryNavy, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-                        Text("$score pts", color = GoldenSun, fontSize = 17.sp, fontWeight = FontWeight.Black)
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            if (score >= level.threeStarScore) {
+                                Icon(
+                                    imageVector = Icons.Rounded.EmojiEvents,
+                                    contentDescription = "Perfect Score",
+                                    tint = GoldenSun,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                            Text("$score pts", color = GoldenSun, fontSize = 17.sp, fontWeight = FontWeight.Black)
+                        }
                     }
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text("MOVES USED", color = TextSecondaryNavy, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
-                        Text("$movesUsed", color = TextDeepNavy, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text("$movesUsed", color = TextDeepNavy, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                     }
                 }
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(2.dp))
 
                 // Action Buttons
                 GamingButton(
@@ -139,7 +169,7 @@ fun LevelCompleteDialog(
                     gradientColors = listOf(Color(0xFF00C853), Color(0xFF00E676)),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(56.dp),
+                        .height(54.dp),
                     testTag = "dialog_next_level_btn"
                 )
 
@@ -150,7 +180,7 @@ fun LevelCompleteDialog(
                     gradientColors = listOf(Color(0xFF78909C), Color(0xFF607D8B)),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(50.dp),
+                        .height(48.dp),
                     testTag = "dialog_replay_btn"
                 )
             }

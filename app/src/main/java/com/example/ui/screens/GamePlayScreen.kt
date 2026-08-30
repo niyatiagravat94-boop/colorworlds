@@ -431,6 +431,7 @@ fun GamePlayScreen(
                 score = uiState.score,
                 movesUsed = uiState.movesUsed,
                 worldTheme = worldTheme,
+                levelData = uiState.levelData,
                 onNextLevel = {
                     viewModel.adsManager.registerLevelCompletion()
                     if (activity != null) {

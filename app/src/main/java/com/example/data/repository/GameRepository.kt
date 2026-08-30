@@ -13,21 +13,17 @@ import kotlinx.coroutines.withContext
 class GameRepository(context: Context, scope: CoroutineScope) {
     private val database = GameDatabase.getDatabase(context, scope)
     private val levelDao = database.levelProgressDao()
+    val levelProgressRepository = LevelProgressRepository(levelDao)
     val preferences = GamePreferences(context)
 
-    val allProgressFlow: Flow<List<LevelProgressEntity>> = levelDao.getAllProgress()
+    val allProgressFlow: Flow<List<LevelProgressEntity>> = levelProgressRepository.allProgressFlow
 
-    val totalStarsFlow: Flow<Int> = levelDao.getTotalStars().map { it ?: 0 }
+    val totalStarsFlow: Flow<Int> = levelProgressRepository.totalStarsFlow
 
-    val highestUnlockedLevelFlow: Flow<Int> = levelDao.getHighestUnlockedLevel().map { it ?: 1 }
+    val highestUnlockedLevelFlow: Flow<Int> = levelProgressRepository.highestUnlockedLevelFlow
 
     suspend fun getProgressForLevel(levelNumber: Int): LevelProgressEntity {
-        return withContext(Dispatchers.IO) {
-            levelDao.getProgressForLevel(levelNumber) ?: LevelProgressEntity(
-                levelNumber = levelNumber,
-                isUnlocked = levelNumber == 1
-            )
-        }
+        return levelProgressRepository.getLevelProgress(levelNumber)
     }
 
     suspend fun saveLevelCompletion(
@@ -35,49 +31,10 @@ class GameRepository(context: Context, scope: CoroutineScope) {
         score: Int,
         starsEarned: Int
     ): Boolean {
-        return withContext(Dispatchers.IO) {
-            val currentProgress = levelDao.getProgressForLevel(levelNumber)
-            val newHighScore = maxOf(currentProgress?.highScore ?: 0, score)
-            val newStars = maxOf(currentProgress?.stars ?: 0, starsEarned)
-
-            levelDao.insertOrUpdate(
-                LevelProgressEntity(
-                    levelNumber = levelNumber,
-                    stars = newStars,
-                    highScore = newHighScore,
-                    isUnlocked = true,
-                    isCompleted = true,
-                    completedAtTimestamp = System.currentTimeMillis()
-                )
-            )
-
-            // Unlock next level if exists
-            val nextLevelNum = levelNumber + 1
-            var unlockedNewWorld = false
-            if (nextLevelNum <= LevelRepository.getTotalLevelCount()) {
-                val nextProgress = levelDao.getProgressForLevel(nextLevelNum)
-                if (nextProgress == null || !nextProgress.isUnlocked) {
-                    levelDao.insertOrUpdate(
-                        LevelProgressEntity(
-                            levelNumber = nextLevelNum,
-                            stars = nextProgress?.stars ?: 0,
-                            highScore = nextProgress?.highScore ?: 0,
-                            isUnlocked = true,
-                            isCompleted = nextProgress?.isCompleted ?: false
-                        )
-                    )
-                }
-
-                val currentWorld = WorldId.forLevel(levelNumber)
-                val nextWorld = WorldId.forLevel(nextLevelNum)
-                if (currentWorld != nextWorld) {
-                    unlockedNewWorld = true
-                }
-            }
-
-            preferences.totalScoreEver += score
-            unlockedNewWorld
-        }
+        val levelData = LevelRepository.getLevel(levelNumber)
+        val result = levelProgressRepository.saveLevelCompletion(levelData, score, starsEarned)
+        preferences.totalScoreEver += score
+        return result.unlockedNewWorld
     }
 
     fun isWorldUnlocked(worldId: WorldId, progressList: List<LevelProgressEntity>): Boolean {
