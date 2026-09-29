@@ -43,7 +43,8 @@ fun GameButton(
     gradientColors: List<Color> = listOf(Color(0xFF00C853), Color(0xFF00E676)),
     bevelDarkColor: Color = Color(0xFF009624),
     testTag: String = "game_button",
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    fontSize: androidx.compose.ui.unit.TextUnit = 18.sp
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
@@ -94,7 +95,7 @@ fun GameButton(
                     ),
                     shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp, bottomStart = 20.dp, bottomEnd = 20.dp)
                 )
-                .padding(horizontal = 20.dp, vertical = 10.dp),
+                .padding(horizontal = 14.dp, vertical = 8.dp),
             contentAlignment = Alignment.Center
         ) {
             Row(
@@ -106,16 +107,19 @@ fun GameButton(
                         imageVector = icon,
                         contentDescription = null,
                         tint = Color.White,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(if (fontSize < 16.sp) 20.dp else 24.dp)
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(6.dp))
                 }
                 Text(
                     text = text,
                     color = Color.White,
-                    fontSize = 18.sp,
+                    fontSize = fontSize,
                     fontWeight = FontWeight.Black,
-                    letterSpacing = 0.5.sp
+                    letterSpacing = 0.5.sp,
+                    maxLines = 1,
+                    softWrap = false,
+                    textAlign = TextAlign.Center
                 )
             }
         }
@@ -133,7 +137,8 @@ fun GamingButton(
     icon: ImageVector? = null,
     gradientColors: List<Color> = listOf(Color(0xFF00B0FF), Color(0xFF0288D1)),
     borderColor: Color = Color.Transparent,
-    testTag: String = "gaming_button"
+    testTag: String = "gaming_button",
+    fontSize: androidx.compose.ui.unit.TextUnit = 18.sp
 ) {
     val bevelDark = gradientColors.last().copy(alpha = 0.9f)
     GameButton(
@@ -143,7 +148,8 @@ fun GamingButton(
         icon = icon,
         gradientColors = gradientColors,
         bevelDarkColor = bevelDark,
-        testTag = testTag
+        testTag = testTag,
+        fontSize = fontSize
     )
 }
 

@@ -116,7 +116,9 @@ fun HomeScreen(
                     text = "$totalStars ⭐",
                     color = TextDeepNavy,
                     fontSize = 16.sp,
-                    fontWeight = FontWeight.Black
+                    fontWeight = FontWeight.Black,
+                    maxLines = 1,
+                    softWrap = false
                 )
             }
 
@@ -199,35 +201,49 @@ fun HomeScreen(
             Spacer(modifier = Modifier.height(28.dp))
 
             // Player Stats & Streak Pill
-            Row(
+            Box(
                 modifier = Modifier
-                    .shadow(4.dp, RoundedCornerShape(16.dp), ambientColor = ShadowColorSoft)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(Color.White)
-                    .border(1.dp, Color(0x334A90E2), RoundedCornerShape(16.dp))
-                    .padding(horizontal = 20.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp),
+                contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "🔥 ${uiState.loginStreakDays}d Streak",
-                    color = GoldenSun,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = "5 Worlds • 50 Levels",
-                    color = TextSecondaryNavy,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Medium
-                )
-                if (preferences.highestComboEver > 0) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(4.dp, RoundedCornerShape(16.dp), ambientColor = ShadowColorSoft)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.White)
+                        .border(1.dp, Color(0x334A90E2), RoundedCornerShape(16.dp))
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Text(
-                        text = "x${preferences.highestComboEver} Combo",
-                        color = BrightBlue,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold
+                        text = "🔥 ${uiState.loginStreakDays}d Streak",
+                        color = GoldenSun,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        softWrap = false
                     )
+                    Text(
+                        text = "5 Worlds • 50 Levels",
+                        color = TextSecondaryNavy,
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Medium,
+                        maxLines = 1,
+                        softWrap = false
+                    )
+                    if (preferences.highestComboEver > 0) {
+                        Text(
+                            text = "x${preferences.highestComboEver} Combo",
+                            color = BrightBlue,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            maxLines = 1,
+                            softWrap = false
+                        )
+                    }
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.example.ui.screens
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,8 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.data.model.WorldId
@@ -52,43 +55,55 @@ fun WorldMapScreen(
                 .fillMaxSize()
                 .statusBarsPadding()
         ) {
-            // Header Bar
-            Row(
+            // Header Bar with true centering
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 GamingIconButton(
                     icon = Icons.AutoMirrored.Rounded.ArrowBack,
                     onClick = onBackClicked,
+                    modifier = Modifier.align(Alignment.CenterStart),
                     testTag = "world_map_back_btn"
                 )
 
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(horizontal = 56.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
                         text = "WORLD ADVENTURE",
                         color = TextDeepNavy,
-                        fontSize = 20.sp,
+                        fontSize = 19.sp,
                         fontWeight = FontWeight.Black,
-                        letterSpacing = 1.sp
+                        letterSpacing = 0.5.sp,
+                        maxLines = 1,
+                        softWrap = false,
+                        textAlign = TextAlign.Center
                     )
                     Text(
                         text = "5 Unique 3D Realms",
                         color = BrightBlue,
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 12.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        softWrap = false,
+                        textAlign = TextAlign.Center
                     )
                 }
 
                 // Stars Badge
                 Row(
                     modifier = Modifier
+                        .align(Alignment.CenterEnd)
                         .shadow(4.dp, RoundedCornerShape(16.dp), ambientColor = ShadowColorSoft)
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color.White)
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                        .border(1.dp, Color(0x334A90E2), RoundedCornerShape(16.dp))
+                        .padding(horizontal = 10.dp, vertical = 6.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
@@ -96,13 +111,15 @@ fun WorldMapScreen(
                         imageVector = Icons.Rounded.Star,
                         contentDescription = null,
                         tint = GoldenSun,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                     Text(
                         text = "$totalStars",
                         color = TextDeepNavy,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Black
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Black,
+                        maxLines = 1,
+                        softWrap = false
                     )
                 }
             }
@@ -112,9 +129,9 @@ fun WorldMapScreen(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(top = 12.dp, bottom = 16.dp)
+                    .padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(14.dp),
+                contentPadding = PaddingValues(top = 8.dp, bottom = 16.dp)
             ) {
                 items(WorldId.entries) { worldId ->
                     val isUnlocked = viewModel.repository.isWorldUnlocked(worldId, progressList)
@@ -173,18 +190,18 @@ fun WorldCard(
         modifier = Modifier
             .fillMaxWidth()
             .shadow(
-                elevation = if (isUnlocked) 8.dp else 2.dp,
-                shape = RoundedCornerShape(24.dp),
+                elevation = if (isUnlocked) 6.dp else 2.dp,
+                shape = RoundedCornerShape(22.dp),
                 ambientColor = ShadowColorSoft,
-                spotColor = if (isUnlocked) worldTheme.ambientGlow.copy(alpha = 0.3f) else Color.Transparent
+                spotColor = if (isUnlocked) worldTheme.ambientGlow.copy(alpha = 0.25f) else Color.Transparent
             )
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(22.dp))
             .background(
                 if (isUnlocked) Color.White else Color(0xFFECEFF1)
             )
             .clickable(onClick = onClick)
             .testTag("world_card_${worldId.name.lowercase()}")
-            .padding(18.dp)
+            .padding(horizontal = 14.dp, vertical = 14.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -194,8 +211,8 @@ fun WorldCard(
             // World Icon / Emoji
             Box(
                 modifier = Modifier
-                    .size(64.dp)
-                    .clip(RoundedCornerShape(18.dp))
+                    .size(56.dp)
+                    .clip(RoundedCornerShape(16.dp))
                     .background(
                         if (isUnlocked) worldTheme.skyGradientTop
                         else Color(0xFFCFD8DC)
@@ -205,40 +222,43 @@ fun WorldCard(
                 if (isUnlocked) {
                     Text(
                         text = worldId.emoji,
-                        fontSize = 32.sp
+                        fontSize = 28.sp
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Rounded.Lock,
                         contentDescription = "Locked",
                         tint = Color.White,
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(24.dp)
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(12.dp))
 
             // Details
             Column(
                 modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 Text(
                     text = worldId.title,
                     color = if (isUnlocked) TextDeepNavy else TextMuted,
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Text(
                     text = if (isUnlocked) worldId.subtitle else "Complete previous world to unlock",
                     color = if (isUnlocked) worldTheme.accentColor else TextMuted,
-                    fontSize = 12.sp,
-                    maxLines = 1
+                    fontSize = 11.5.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(3.dp))
 
                 // Progress bar
                 Box(
@@ -257,20 +277,27 @@ fun WorldCard(
                     )
                 }
 
+                Spacer(modifier = Modifier.height(2.dp))
+
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "$completedCount / $totalLevels Levels",
                         color = TextSecondaryNavy,
-                        fontSize = 11.sp
+                        fontSize = 11.sp,
+                        maxLines = 1,
+                        softWrap = false
                     )
                     Text(
                         text = "$starsEarned / $maxStars ⭐",
                         color = GoldenSun,
                         fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1,
+                        softWrap = false
                     )
                 }
             }
@@ -281,7 +308,7 @@ fun WorldCard(
                 imageVector = if (isUnlocked) Icons.Rounded.ChevronRight else Icons.Rounded.Lock,
                 contentDescription = null,
                 tint = if (isUnlocked) worldTheme.accentColor else TextMuted,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(24.dp)
             )
         }
     }

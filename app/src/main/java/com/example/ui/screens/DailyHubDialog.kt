@@ -7,7 +7,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.*
 import androidx.compose.material3.*
@@ -53,109 +55,136 @@ fun DailyHubDialog(
     ) {
         Box(
             modifier = Modifier
-                .fillMaxWidth(0.92f)
-                .fillMaxHeight(0.85f)
-                .shadow(24.dp, RoundedCornerShape(28.dp), ambientColor = ShadowColorSoft)
-                .clip(RoundedCornerShape(28.dp))
-                .background(Color.White)
-                .border(2.dp, Color(0x334A90E2), RoundedCornerShape(28.dp))
-                .padding(20.dp)
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 20.dp),
+            contentAlignment = Alignment.Center
         ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .widthIn(max = 420.dp)
+                    .fillMaxHeight(0.88f)
+                    .shadow(24.dp, RoundedCornerShape(28.dp), ambientColor = ShadowColorSoft)
+                    .clip(RoundedCornerShape(28.dp))
+                    .background(Color.White)
+                    .border(2.dp, Color(0x334A90E2), RoundedCornerShape(28.dp))
+                    .padding(16.dp)
             ) {
-                // Header Row
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "🔥 ${uiState.loginStreakDays} Day Streak",
-                        color = GoldenSun,
-                        fontSize = 15.sp,
-                        fontWeight = FontWeight.Black
-                    )
+                    // Header Row with Centered Titles and Close Button at Top-End
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 6.dp)
+                    ) {
+                        // Close Button at top right
+                        GamingIconButton(
+                            icon = Icons.Rounded.Close,
+                            onClick = onDismiss,
+                            size = 36.dp,
+                            modifier = Modifier.align(Alignment.TopEnd),
+                            testTag = "close_hub_btn"
+                        )
 
-                    Text(
-                        text = "PLAYER REWARDS",
-                        color = TextDeepNavy,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Black,
-                        letterSpacing = 1.sp
-                    )
-
-                    GamingIconButton(
-                        icon = Icons.Rounded.Close,
-                        onClick = onDismiss,
-                        size = 36.dp,
-                        testTag = "close_hub_btn"
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(14.dp))
-
-                // Custom Tab Switcher
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color(0xFFF1F5F9))
-                        .padding(4.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
-                ) {
-                    HubTab.entries.forEach { tab ->
-                        val isSelected = selectedTab == tab
-                        Box(
+                        // Centered Titles Column - Never overlaps streak text
+                        Column(
                             modifier = Modifier
-                                .weight(1f)
-                                .clip(RoundedCornerShape(12.dp))
-                                .then(
-                                    if (isSelected) {
-                                        Modifier.background(
-                                            Brush.linearGradient(listOf(BrightBlue, ElectricCyan))
-                                        )
-                                    } else {
-                                        Modifier.background(Color.Transparent)
-                                    }
-                                )
-                                .clickable {
-                                    viewModel.soundManager.playButtonClick()
-                                    selectedTab = tab
-                                }
-                                .padding(vertical = 8.dp),
-                            contentAlignment = Alignment.Center
+                                .align(Alignment.Center)
+                                .padding(horizontal = 42.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
                             Text(
-                                text = "${tab.icon} ${tab.title}",
-                                color = if (isSelected) Color.White else TextSecondaryNavy,
-                                fontSize = 12.sp,
-                                fontWeight = if (isSelected) FontWeight.Black else FontWeight.Medium
+                                text = "PLAYER REWARDS",
+                                color = TextDeepNavy,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Black,
+                                letterSpacing = 0.5.sp,
+                                textAlign = TextAlign.Center,
+                                maxLines = 1,
+                                softWrap = false
+                            )
+
+                            Text(
+                                text = "🔥 ${uiState.loginStreakDays} Day Streak",
+                                color = GoldenSun,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                maxLines = 1,
+                                softWrap = false
                             )
                         }
                     }
-                }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
 
-                // Tab Content
-                Box(modifier = Modifier.weight(1f)) {
-                    when (selectedTab) {
-                        HubTab.DAILY_REWARDS -> DailyRewardsTabContent(
-                            rewards = uiState.dailyRewards,
-                            streakDays = uiState.loginStreakDays,
-                            isClaimable = uiState.isDailyRewardClaimable,
-                            onClaim = { viewModel.claimDailyReward() }
-                        )
-                        HubTab.MISSIONS -> DailyMissionsTabContent(
-                            missions = uiState.dailyMissions,
-                            onClaim = { viewModel.claimDailyMission(it) }
-                        )
-                        HubTab.MILESTONES -> MilestonesTabContent(
-                            milestones = uiState.milestones,
-                            onClaim = { viewModel.claimMilestone(it) }
-                        )
+                    // Custom Tab Switcher - Evenly aligned & fully visible
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(Color(0xFFF1F5F9))
+                            .padding(3.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly
+                    ) {
+                        HubTab.entries.forEach { tab ->
+                            val isSelected = selectedTab == tab
+                            Box(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .clip(RoundedCornerShape(11.dp))
+                                    .then(
+                                        if (isSelected) {
+                                            Modifier.background(
+                                                Brush.linearGradient(listOf(BrightBlue, ElectricCyan))
+                                            )
+                                        } else {
+                                            Modifier.background(Color.Transparent)
+                                        }
+                                    )
+                                    .clickable {
+                                        viewModel.soundManager.playButtonClick()
+                                        selectedTab = tab
+                                    }
+                                    .padding(vertical = 7.dp, horizontal = 2.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "${tab.icon} ${tab.title}",
+                                    color = if (isSelected) Color.White else TextSecondaryNavy,
+                                    fontSize = 11.5.sp,
+                                    fontWeight = if (isSelected) FontWeight.Black else FontWeight.Bold,
+                                    maxLines = 1,
+                                    softWrap = false
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    // Tab Content
+                    Box(modifier = Modifier.weight(1f)) {
+                        when (selectedTab) {
+                            HubTab.DAILY_REWARDS -> DailyRewardsTabContent(
+                                rewards = uiState.dailyRewards,
+                                streakDays = uiState.loginStreakDays,
+                                isClaimable = uiState.isDailyRewardClaimable,
+                                onClaim = { viewModel.claimDailyReward() }
+                            )
+                            HubTab.MISSIONS -> DailyMissionsTabContent(
+                                missions = uiState.dailyMissions,
+                                onClaim = { viewModel.claimDailyMission(it) }
+                            )
+                            HubTab.MILESTONES -> MilestonesTabContent(
+                                milestones = uiState.milestones,
+                                onClaim = { viewModel.claimMilestone(it) }
+                            )
+                        }
                     }
                 }
             }
@@ -173,7 +202,7 @@ fun DailyRewardsTabContent(
     val infiniteTransition = rememberInfiniteTransition(label = "pulse_claim")
     val claimScale by infiniteTransition.animateFloat(
         initialValue = 1f,
-        targetValue = 1.04f,
+        targetValue = 1.03f,
         animationSpec = infiniteRepeatable(
             animation = tween(700, easing = FastOutSlowInEasing),
             repeatMode = RepeatMode.Reverse
@@ -183,38 +212,43 @@ fun DailyRewardsTabContent(
 
     Column(
         modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Scrollable content area so cards and texts fit perfectly
         Column(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth()
+            verticalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Text(
                 text = "7-Day Login Streak Calendar",
                 color = BrightBlue,
                 fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
             )
             Text(
                 text = "Check in daily to build your streak and earn free Boosters!",
                 color = TextSecondaryNavy,
-                fontSize = 12.sp,
+                fontSize = 11.5.sp,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             // 7 Days Grid
             Column(
-                verticalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 // Days 1 to 4
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     rewards.take(4).forEach { item ->
                         Box(modifier = Modifier.weight(1f)) {
@@ -226,7 +260,7 @@ fun DailyRewardsTabContent(
                 // Days 5 to 7 (Day 7 is Grand Chest)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     rewards.drop(4).take(2).forEach { item ->
                         Box(modifier = Modifier.weight(1f)) {
@@ -240,9 +274,13 @@ fun DailyRewardsTabContent(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(4.dp))
         }
 
-        // Claim CTA Button
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Claim CTA Button: Fully visible at bottom, complete text centered
         if (isClaimable) {
             GamingButton(
                 text = "CLAIM TODAY'S REWARD",
@@ -251,8 +289,9 @@ fun DailyRewardsTabContent(
                 gradientColors = listOf(GoldenSun, Color(0xFFFF8F00)),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(54.dp)
+                    .height(50.dp)
                     .scale(claimScale),
+                fontSize = 14.5.sp,
                 testTag = "claim_daily_reward_btn"
             )
         } else {
@@ -261,24 +300,25 @@ fun DailyRewardsTabContent(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
                     .background(Color(0xFFE8F8F0))
-                    .padding(vertical = 14.dp),
+                    .padding(vertical = 12.dp, horizontal = 8.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.CheckCircle,
                         contentDescription = null,
                         tint = VibrantGreen,
-                        modifier = Modifier.size(20.dp)
+                        modifier = Modifier.size(18.dp)
                     )
                     Text(
                         text = "Today's reward claimed! Next reward unlocks tomorrow.",
                         color = VibrantGreen,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold
+                        fontSize = 11.5.sp,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
                     )
                 }
             }
@@ -306,11 +346,11 @@ fun DailyRewardCard(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(100.dp)
-            .clip(RoundedCornerShape(16.dp))
+            .height(82.dp)
+            .clip(RoundedCornerShape(14.dp))
             .background(Brush.verticalGradient(bgGradient))
-            .border(if (item.isAvailableToday) 2.dp else 1.dp, borderColor, RoundedCornerShape(16.dp))
-            .padding(6.dp),
+            .border(if (item.isAvailableToday) 2.dp else 1.dp, borderColor, RoundedCornerShape(14.dp))
+            .padding(horizontal = 4.dp, vertical = 6.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -321,17 +361,19 @@ fun DailyRewardCard(
             Text(
                 text = "Day ${item.dayNumber}",
                 color = if (item.isAvailableToday) GoldenSun else TextSecondaryNavy,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Black
+                fontSize = 10.5.sp,
+                fontWeight = FontWeight.Black,
+                maxLines = 1
             )
 
             Text(
                 text = if (isGrandChest) "👑 Grand" else item.description,
                 color = TextDeepNavy,
-                fontSize = if (isGrandChest) 13.sp else 11.sp,
+                fontSize = if (isGrandChest) 11.5.sp else 10.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
-                maxLines = 2
+                maxLines = 2,
+                lineHeight = 12.sp
             )
 
             if (item.isClaimed) {
@@ -343,22 +385,22 @@ fun DailyRewardCard(
                         imageVector = Icons.Rounded.Check,
                         contentDescription = "Claimed",
                         tint = VibrantGreen,
-                        modifier = Modifier.size(14.dp)
+                        modifier = Modifier.size(12.dp)
                     )
-                    Text("DONE", color = VibrantGreen, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text("DONE", color = VibrantGreen, fontSize = 9.5.sp, fontWeight = FontWeight.Bold)
                 }
             } else if (item.isAvailableToday) {
                 Text(
                     text = "READY",
                     color = GoldenSun,
-                    fontSize = 10.sp,
+                    fontSize = 9.5.sp,
                     fontWeight = FontWeight.Black
                 )
             } else {
                 Text(
                     text = "LOCKED",
                     color = TextMuted,
-                    fontSize = 9.sp
+                    fontSize = 8.5.sp
                 )
             }
         }
